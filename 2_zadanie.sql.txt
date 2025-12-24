@@ -1,0 +1,54 @@
+-- Тестовый альбом для вставки треков
+INSERT INTO albums (title, release_year) VALUES ('Test Album', 2025) ON CONFLICT DO NOTHING;
+
+SELECT id FROM albums WHERE title = 'Test Album';
+
+
+INSERT INTO tracks (title, duration, album_id) VALUES
+('my own', 180, 1),
+('own my', 200, 1),
+('my', 150, 1),
+('oh my god', 240, 1),
+('myself', 190, 1),
+('by myself', 210, 1),
+('bemy self', 170, 1),
+('myself by', 220, 1),
+('by myself by', 230, 1),
+('beemy', 160, 1),
+('premyne', 195, 1)
+ON CONFLICT DO NOTHING;
+
+-- Задание 2.1: Треки длительностью > 3:30 (210 сек)
+SELECT title AS название, duration AS длительность
+FROM tracks
+WHERE duration >= 210;
+
+-- Задание 2.2: 5 самых длинных треков (с минутами:секундами)
+SELECT title AS название, duration AS длительность,
+       CONCAT(FLOOR(duration/60), ':', LPAD(MOD(duration, 60), 2, '0')) AS длительность_мм_сс
+FROM tracks
+WHERE duration = (SELECT MAX(duration) FROM tracks)
+LIMIT 5;
+
+-- Задание 2.3: Исполнители 2018-2020 гг.
+SELECT title AS название, release_year AS год_выпуска
+FROM compilations
+WHERE release_year BETWEEN 2018 AND 2020
+ORDER BY release_year;
+
+-- Задание 2.4: Исполнители без %%% (добавить данные artists)
+SELECT name AS имя
+FROM artists
+WHERE name NOT LIKE '% % %';
+
+-- Задание 2.5: ИСПРАВЛЕННЫЙ SELECT
+SELECT title AS название_трека
+FROM tracks
+WHERE title ILIKE 'мой'
+   OR title ILIKE '% мой'
+   OR title ILIKE 'мой %'
+   OR title ILIKE '% мой %'
+   OR title ILIKE 'my'
+   OR title ILIKE '% my'
+   OR title ILIKE 'my %'
+   OR title ILIKE '% my %';
